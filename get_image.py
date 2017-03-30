@@ -36,7 +36,7 @@ def get_response(url,referer = "https://girl-atlas.com/album/58d15fcc92d302622dc
 
 def getAvUrl(url):
     start_url = 'https://girl-atlas.com'
-    p1 = r"^/album/.*"  # 我们写的正则表达式，下面会将为什么
+    p1 = r"^/album/.*"
     pattern1 = re.compile(p1)
     rst =  pattern1.findall(url)
     if len(rst) >= 1:
@@ -45,9 +45,27 @@ def getAvUrl(url):
 def getEncode(title):
     return title.encode("utf-8")
 
+def get_tag_urls(url = 'https://girl-atlas.com/'):
+    album = []
+    for i in range(201,205):
+        start_url = url + "?p=%s" % (str(i))
+        print start_url
+        response = get_response(start_url)
+        if response is  None:
+            return None
+        else:
+            parsed_body = html.fromstring(response.text)
+            next_url = parsed_body.xpath('//a/@href')
+            next_url = map(getAvUrl,next_url)
+            next_url = [item for item in next_url if item is not None]
+            album.extend(next_url)
+    # print next_url
+    album = list(set(album))
+    return album
+
 def get_page_urls(url = 'https://girl-atlas.com/'):
     album = []
-    for i in range(191,201):
+    for i in range(201,205):
         start_url = url + "?p=%s" % (str(i))
         print start_url
         response = get_response(start_url)
