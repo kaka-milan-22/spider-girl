@@ -6,7 +6,6 @@ import re
 import sys
 
 
-
 def get_response(url,referer = "https://girl-atlas.com/album/58d15fcc92d302622dc57a80'",count = 1,timeout = 30):
     # 填充请求的头部
     print ("try %s url:%s") % (str(count),url)
@@ -48,7 +47,7 @@ def getEncode(title):
 
 def get_page_urls(url = 'https://girl-atlas.com/'):
     album = []
-    for i in range(101,151):
+    for i in range(191,201):
         start_url = url + "?p=%s" % (str(i))
         print start_url
         response = get_response(start_url)
@@ -69,6 +68,9 @@ def get_girl_urls(page_urls):
     if page_urls is None:
         return None
     girl_urls = []
+
+    count = 0
+    start_dir = './data/'
     for url in page_urls:
         print url
         response = get_response(url)
@@ -80,34 +82,20 @@ def get_girl_urls(page_urls):
         tmp = zip(title, girl)
         pic = dict((x, y) for x, y in tmp)
         for k,v in pic.items():
-            print k,v
-            with open("info.py","a") as f:
-                content = ("%s:%s\n") % (k,v)
-                f.writelines(content)
+            count += 1
+            print count,k,v
+            if "/" in k:k = k.replace("/","-")
+            with open(start_dir + k + ".jpg", 'wb') as f:
+                r = get_response(v)
+                f.write(r.content)
+            # with open("info.py","a") as f:
+                # content = ("%s:%s\n") % (k,v)
+                # f.writelines(content)
         # girl = parsed_body.xpath('/html/body/div[2]/section/div/div[1]/div[1]/ul/li/img/@src')
         # girl_urls.extend(girl)
         girl_urls.append(pic)
     return girl_urls
 
-def get_image_urls(girl_urls):
-
-    girl_list = []
-
-    for url in girl_urls:
-        # print "in get_image_urls" + url[0]
-        response = get_response(url)
-        parsed_body = html.fromstring(response.text)
-
-        # 专辑名
-        girl_title  = parsed_body.xpath('//title/text()')
-        print girl_title
-        image_urls = parsed_body.xpath('//li[@class="slide "]/img/@src | //li[@class="slide "]/img/@delay')
-
-        girl_dict = {girl_title[0] : image_urls}
-        girl_list.append(girl_dict)
-
-    print "get_girl_urls done!!!"
-    return girl_list
 
 # 开始下载图片
 def get_images(girl_list):
@@ -132,12 +120,12 @@ if __name__ == '__main__':
     start_time = time.time()
     print start_time
     girl_urls = get_girl_urls(page_urls)
-    print "=" * 100
-    print girl_urls
-    print len(girl_urls)
-    print "=" * 100
-    print (".........start to download")
-    get_images(girl_urls)
+    # print "=" * 100
+    # print girl_urls
+    # print len(girl_urls)
+    # print "=" * 100
+    # print (".........start to download")
+    # get_images(girl_urls)
 
     # elapsed_time = time.time() - start_time
     # print
