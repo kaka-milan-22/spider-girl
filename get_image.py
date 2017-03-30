@@ -48,7 +48,7 @@ def getEncode(title):
 
 def get_page_urls(url = 'https://girl-atlas.com/'):
     album = []
-    for i in range(51,71):
+    for i in range(101,151):
         start_url = url + "?p=%s" % (str(i))
         print start_url
         response = get_response(start_url)
