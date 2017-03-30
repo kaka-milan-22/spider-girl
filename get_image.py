@@ -34,9 +34,10 @@ def get_response(url,referer = "https://girl-atlas.com/album/58d15fcc92d302622dc
 # 起始url 为 http://girl-atlas.com/
 # 我爬的时候网站一共有92个页面
 
-def getAvUrl(url):
+def getAvUrl(str_class,url):
+    print str_class,url
     start_url = 'https://girl-atlas.com'
-    p1 = r"^/album/.*"
+    p1 = r"^/%s/.*" % str_class
     pattern1 = re.compile(p1)
     rst =  pattern1.findall(url)
     if len(rst) >= 1:
@@ -46,22 +47,21 @@ def getEncode(title):
     return title.encode("utf-8")
 
 def get_tag_urls(url = 'https://girl-atlas.com/'):
-    album = []
-    for i in range(201,205):
-        start_url = url + "?p=%s" % (str(i))
-        print start_url
-        response = get_response(start_url)
-        if response is  None:
-            return None
-        else:
-            parsed_body = html.fromstring(response.text)
-            next_url = parsed_body.xpath('//a/@href')
-            next_url = map(getAvUrl,next_url)
-            next_url = [item for item in next_url if item is not None]
-            album.extend(next_url)
+    tag = []
+    start_url = url
+    response = get_response(start_url)
+    if response is  None:
+        return None
+    else:
+        parsed_body = html.fromstring(response.text)
+        next_url = parsed_body.xpath('//a/@href')
+        tmp = ["tag" for i in range(0,len(next_url))]
+        next_url = map(getAvUrl,tmp,next_url)
+        next_url = [item for item in next_url if item is not None]
+        tag.extend(next_url)
     # print next_url
-    album = list(set(album))
-    return album
+    tag = list(set(album))
+    return tag
 
 def get_page_urls(url = 'https://girl-atlas.com/'):
     album = []
@@ -74,7 +74,8 @@ def get_page_urls(url = 'https://girl-atlas.com/'):
         else:
             parsed_body = html.fromstring(response.text)
             next_url = parsed_body.xpath('//a/@href')
-            next_url = map(getAvUrl,next_url)
+            tmp = ["album" for i in range(0,len(next_url))]
+            next_url = map(getAvUrl,tmp,next_url)
             next_url = [item for item in next_url if item is not None]
             album.extend(next_url)
     # print next_url
@@ -133,11 +134,13 @@ def get_images(girl_list):
 if __name__ == '__main__':
     reload(sys)
     sys.setdefaultencoding('utf8')
-    page_urls = get_page_urls()
+    page_urls = get_tag_urls()
     print page_urls
-    start_time = time.time()
-    print start_time
-    girl_urls = get_girl_urls(page_urls)
+    # page_urls = get_page_urls()
+    # print page_urls
+    # start_time = time.time()
+    # print start_time
+    # girl_urls = get_girl_urls(page_urls)
     # print "=" * 100
     # print girl_urls
     # print len(girl_urls)
