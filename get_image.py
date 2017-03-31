@@ -62,6 +62,7 @@ def get_tag_urls(url = 'https://girl-atlas.com/'):
 
 
 def get_album_urls(url = 'https://girl-atlas.com/'):
+    #total 256 page album
     urls = [ url + "?p=%s" % (str(i)) for i in range(221,257) ]
     return urls
 
@@ -112,8 +113,6 @@ def get_girl_urls(page_urls):
             # with open("info.py","a") as f:
                 # content = ("%s:%s\n") % (k,v)
                 # f.writelines(content)
-        # girl = parsed_body.xpath('/html/body/div[2]/section/div/div[1]/div[1]/ul/li/img/@src')
-        # girl_urls.extend(girl)
         girl_urls.append(pic)
     return girl_urls
 
@@ -136,24 +135,18 @@ def get_images(girl_list):
 if __name__ == '__main__':
     reload(sys)
     sys.setdefaultencoding('utf8')
-    album_urls = get_album_urls()
-    page_urls = get_page_urls(album_urls)
-    # tag_urls = get_tag_urls()
-    # print tag_urls
-    # page_urls = get_page_urls(tag_urls)
-    print page_urls
     start_time = time.time()
     print start_time
+    ## download ablum url
+    album_urls = get_album_urls()
+    print album_urls
+    page_urls = get_page_urls(album_urls)
+    ## download tag url
+    tag_urls = get_tag_urls()
+    print tag_urls
+    page_urls = get_page_urls(tag_urls)
     girl_urls = get_girl_urls(page_urls)
     stop_time = time.time()
-    print int(stop_time - start_time)
-    # print "=" * 100
-    # print girl_urls
-    # print len(girl_urls)
-    # print "=" * 100
-    # print (".........start to download")
-    # get_images(girl_urls)
-
-    # elapsed_time = time.time() - start_time
-    # print
-    # print "elasped %s seconds!!!!" % elapsed_time
+    elapsed_time = time.time() - start_time
+    print
+    print "elasped %s seconds!!!!" % elapsed_time
