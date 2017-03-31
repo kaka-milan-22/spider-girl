@@ -30,9 +30,6 @@ def get_response(url,referer = "https://girl-atlas.com/album/58d15fcc92d302622dc
         print "*" * 100
         return get_response(url,referer = referer,count = count,timeout = timeout)
 
-# 获得每个页面的url
-# 起始url 为 http://girl-atlas.com/
-# 我爬的时候网站一共有92个页面
 
 def getAvUrl(str_class,url):
     start_url = 'https://girl-atlas.com'
@@ -63,7 +60,7 @@ def get_tag_urls(url = 'https://girl-atlas.com/'):
 
 
 def get_album_urls(url = 'https://girl-atlas.com/'):
-    urls = [ url + "?p=%s" % (str(i)) for i in range(201,205) ]
+    urls = [ url + "?p=%s" % (str(i)) for i in range(221,257) ]
     return urls
 
 
@@ -137,12 +134,11 @@ def get_images(girl_list):
 if __name__ == '__main__':
     reload(sys)
     sys.setdefaultencoding('utf8')
-    # album_urls = get_album_urls()
-    # page_urls = get_page_urls(album_urls)
-    # page_urls = get_page_urls(get_album_urls())
-    tag_urls = get_tag_urls()
-    print tag_urls
-    page_urls = get_page_urls(tag_urls)
+    album_urls = get_album_urls()
+    page_urls = get_page_urls(album_urls)
+    # tag_urls = get_tag_urls()
+    # print tag_urls
+    # page_urls = get_page_urls(tag_urls)
     print page_urls
     start_time = time.time()
     print start_time
